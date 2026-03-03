@@ -4,12 +4,17 @@ from app.config import get_settings
 
 settings = get_settings()
 
+connect_args = {}
+if settings.ORACLE_WALLET_DIR:
+    connect_args["config_dir"] = settings.ORACLE_WALLET_DIR
+
 engine = create_async_engine(
     settings.DATABASE_URL,
     echo=False,
     pool_size=5,
     max_overflow=10,
     pool_pre_ping=True,
+    connect_args=connect_args,
 )
 
 async_session = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)

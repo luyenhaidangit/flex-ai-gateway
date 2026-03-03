@@ -23,3 +23,7 @@ Thumbs.db
 
 # Docker volumes
 oracle-data/
+
+# Oracle Wallet files
+secrets/oracle-wallet/*
+!secrets/oracle-wallet/oracle-wallet.md

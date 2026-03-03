@@ -28,10 +28,15 @@ services:
     ports:
       - "8000:8000"
     environment:
-      DATABASE_URL: "oracle+oracledb://${ORACLE_USER:-mlops_admin}:${ORACLE_PASSWORD:-SecurePass123}@db:1521/?service_name=XEPDB1"
+      # Database Connection Strings (Use TNS name if using wallet)
+      DATABASE_URL: ${DATABASE_URL:-oracle+oracledb://mlops_admin:SecurePass123@db:1521/?service_name=XEPDB1}
+      ORACLE_WALLET_DIR: ${ORACLE_WALLET_DIR:-}
       MODEL_NAME: ${MODEL_NAME:-sentiment-analysis-v1}
       CONFIDENCE_THRESHOLD: ${CONFIDENCE_THRESHOLD:-0.5}
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:3000,http://localhost:8080}
+    volumes:
+      # Mount secrets directory (if it exists locally) to support Oracle Wallet
+      - ../secrets:/app/secrets:ro
     depends_on:
       db:
         condition: service_healthy

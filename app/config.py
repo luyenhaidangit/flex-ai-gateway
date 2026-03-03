@@ -7,6 +7,7 @@ class Settings(BaseSettings):
 
     # Database
     DATABASE_URL: str = "oracle+oracledb://ai_gateway:SecurePass123@db:1521/?service_name=XEPDB1"
+    ORACLE_WALLET_DIR: str | None = None
 
     # ML Model Config
     MODEL_NAME: str = "sentiment-analysis-v1"
