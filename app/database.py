@@ -1,12 +1,18 @@
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
+import os
 from app.config import get_settings
 
 settings = get_settings()
 
 connect_args = {}
 if settings.ORACLE_WALLET_DIR:
-    connect_args["config_dir"] = settings.ORACLE_WALLET_DIR
+    abs_wallet_dir = os.path.abspath(settings.ORACLE_WALLET_DIR)
+    connect_args["config_dir"] = abs_wallet_dir
+    connect_args["wallet_location"] = abs_wallet_dir
+    os.environ["TNS_ADMIN"] = abs_wallet_dir
+    if settings.ORACLE_WALLET_PASSWORD:
+        connect_args["wallet_password"] = settings.ORACLE_WALLET_PASSWORD
 
 engine = create_async_engine(
     settings.DATABASE_URL,
