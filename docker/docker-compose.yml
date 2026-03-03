@@ -1,0 +1,41 @@
+services:
+  # ─── Oracle Database ─────────────────────────────────────
+  db:
+    image: gvenzl/oracle-xe:21-slim
+    container_name: ai-gateway-db
+    environment:
+      ORACLE_PASSWORD: ${ORACLE_PASSWORD:-SecurePass123}
+      APP_USER: ${ORACLE_USER:-ai_gateway}
+      APP_USER_PASSWORD: ${ORACLE_PASSWORD:-SecurePass123}
+    ports:
+      - "1521:1521"
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+
+  # ─── FastAPI Application ─────────────────────────────────
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: ai-gateway-api
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: "oracle+oracledb://${ORACLE_USER:-ai_gateway}:${ORACLE_PASSWORD:-SecurePass123}@db:1521/?service_name=XEPDB1"
+      AI_API_KEY: ${AI_API_KEY:-sk-mock-key}
+      AI_API_BASE_URL: ${AI_API_BASE_URL:-https://api.openai.com/v1}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:3000,http://localhost:8080}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  oracle-data:
