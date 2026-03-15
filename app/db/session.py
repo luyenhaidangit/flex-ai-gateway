@@ -1,5 +1,3 @@
-# app/db/session.py
-
 import logging
 import os
 
