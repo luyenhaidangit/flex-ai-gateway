@@ -10,7 +10,7 @@ from app.bootstrap.routes import register_routes
 from app.config import get_settings
 
 
-def create_application(lifespan: Callable) -> FastAPI:
+def create_application(lifespan: Callable | None = None) -> FastAPI:
     settings = get_settings()
 
     app = FastAPI(
