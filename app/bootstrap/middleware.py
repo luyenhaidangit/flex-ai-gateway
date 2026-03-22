@@ -1,7 +1,7 @@
 ﻿from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.config import Settings
+from app.core.config import Settings
 
 
 def register_middleware(app: FastAPI, settings: Settings) -> None:

@@ -1,4 +1,4 @@
-import asyncio
+﻿import asyncio
 import random
 from datetime import datetime, timezone
 import logging
@@ -7,7 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.database import InferenceResult
-from app.config import get_settings
+from app.core.config import get_settings
 
 logger = logging.getLogger(__name__)
 
