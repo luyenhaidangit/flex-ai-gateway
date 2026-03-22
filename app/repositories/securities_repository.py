@@ -1,4 +1,6 @@
 ﻿import logging
+from datetime import datetime
+from decimal import Decimal
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -13,6 +15,26 @@ class SecuritiesRepository:
 
     def __init__(self, db: AsyncSession):
         self.db = db
+
+    async def create(
+        self,
+        symbol: str,
+        trade_time: datetime,
+        price: float,
+        volume: int,
+        change_percent: float,
+    ) -> SecuritiesInfo:
+        entry = SecuritiesInfo(
+            symbol=symbol.upper(),
+            trade_time=trade_time,
+            price=Decimal(str(price)),
+            volume=volume,
+            change_percent=Decimal(str(change_percent)),
+        )
+        self.db.add(entry)
+        await self.db.commit()
+        await self.db.refresh(entry)
+        return entry
 
     async def get_by_id(self, security_id: int) -> SecuritiesInfo | None:
         """Retrieve a market data record by its primary key."""

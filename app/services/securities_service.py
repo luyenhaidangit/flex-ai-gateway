@@ -1,7 +1,10 @@
 ﻿from decimal import Decimal
 
+from app.models.securities_info import SecuritiesInfo
 from app.repositories.securities_repository import SecuritiesRepository
 from app.schemas.securities_schema import SecuritiesAdviceResponse
+from app.schemas.securities_schema import SecuritiesInfoResponse
+from app.schemas.securities_schema import SecuritiesPriceChangeRequest
 
 
 class SecuritiesService:
@@ -9,6 +12,18 @@ class SecuritiesService:
 
     def __init__(self, repo: SecuritiesRepository):
         self.repo = repo
+
+    async def create_price_change(
+        self, request: SecuritiesPriceChangeRequest
+    ) -> SecuritiesInfoResponse:
+        entry = await self.repo.create(
+            symbol=request.symbol,
+            trade_time=request.trade_time,
+            price=request.price,
+            volume=request.volume,
+            change_percent=request.change_percent,
+        )
+        return self._to_info_response(entry)
 
     async def get_advice(self, symbol: str) -> SecuritiesAdviceResponse | None:
         record = await self.repo.get_latest_by_symbol(symbol)
@@ -23,6 +38,16 @@ class SecuritiesService:
             symbol=record.symbol,
             recommendation=recommendation,
             confidence=confidence,
+        )
+
+    def _to_info_response(self, entry: SecuritiesInfo) -> SecuritiesInfoResponse:
+        return SecuritiesInfoResponse(
+            id=entry.id,
+            symbol=entry.symbol,
+            trade_time=entry.trade_time,
+            price=float(entry.price),
+            volume=entry.volume,
+            change_percent=float(entry.change_percent),
         )
 
     def _get_recommendation(self, change_percent: float) -> str:
