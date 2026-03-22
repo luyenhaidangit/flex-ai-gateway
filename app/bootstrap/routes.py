@@ -1,7 +1,7 @@
 ﻿from fastapi import FastAPI
 
-from app.routers.api import health_router
 from app.routers.api import router as api_router
+from app.routers.health import router as health_router
 
 
 def register_routes(app: FastAPI) -> None:
