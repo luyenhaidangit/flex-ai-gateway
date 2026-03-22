@@ -12,9 +12,6 @@ class Settings(BaseSettings):
     APP_TITLE: str = "Flex AI Gateway"
     APP_DESCRIPTION: str = "Flex AI Gateway Project"
     APP_VERSION: str = "1.0.0"
-    APP_ENV: str = "development"
-    APP_HOST: str = "0.0.0.0"
-    APP_PORT: int = 8000
     DEBUG: bool = True
 
     # =========================
