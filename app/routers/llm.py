@@ -10,12 +10,12 @@ router = APIRouter(prefix="/llm", tags=["LLM"])
 
 @router.get(
     "/health",
-    summary="Check vLLM health",
+    summary="Check Ollama health",
 )
 async def llm_health(settings: SettingsDep):
     service = LlmService(settings)
     healthy = await service.is_healthy()
-    return {"status": "healthy" if healthy else "unavailable", "upstream": settings.VLLM_BASE_URL}
+    return {"status": "healthy" if healthy else "unavailable", "upstream": settings.OLLAMA_BASE_URL}
 
 
 @router.post(

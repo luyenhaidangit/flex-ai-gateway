@@ -22,13 +22,13 @@ class Settings(BaseSettings):
     ORACLE_WALLET_PASSWORD: str | None = None
 
     # =========================
-    # LLM / vLLM
+    # LLM / OLLAMA
     # =========================
-    VLLM_BASE_URL: str = "http://vllm:8000"
-    VLLM_MODEL_NAME: str = "Qwen/Qwen2.5-0.5B-Instruct"
-    VLLM_TIMEOUT_SECONDS: float = 120.0
-    VLLM_MAX_TOKENS: int = 256
-    VLLM_TEMPERATURE: float = 0.2
+    OLLAMA_BASE_URL: str = "http://ollama:11434"
+    OLLAMA_MODEL_NAME: str = "qwen2.5:0.5b"
+    OLLAMA_TIMEOUT_SECONDS: float = 120.0
+    OLLAMA_MAX_TOKENS: int = 256
+    OLLAMA_TEMPERATURE: float = 0.2
 
     # =========================
     # ML MODEL
