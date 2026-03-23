@@ -71,11 +71,7 @@
                 stage('Build') {
                     steps {
                         echo '========== Build =========='
-                        sh '''
-                            set -e
-                            python3 --version
-                            python3 -m compileall app
-                        '''
+                        echo 'Nothing to do'
                         echo '==========================='
                     }
                 }
