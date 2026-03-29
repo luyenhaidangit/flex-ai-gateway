@@ -66,6 +66,7 @@ Cac bien quan trong:
 - `DATABASE_URL`: chuoi ket noi Oracle
 - `ORACLE_WALLET_DIR`: thu muc wallet neu dung Oracle Wallet
 - `ORACLE_WALLET_PASSWORD`: mat khau wallet neu co
+- `OLLAMA_BASE_URL`: URL Ollama. Chay local bang `uvicorn` thi dung `http://localhost:11434`; chay trong Docker Compose cung network voi service `ollama` thi dung `http://ollama:11434`
 - `ALLOWED_ORIGINS`: danh sach origin CORS
 - `APP_TITLE`, `APP_DESCRIPTION`, `APP_VERSION`: metadata cua API neu ban muon bo sung trong `.env`
 
@@ -80,6 +81,12 @@ pip install -e .
 
 ## Chay local
 
+Dam bao Ollama dang chay va `.env` co:
+
+```env
+OLLAMA_BASE_URL=http://localhost:11434
+```
+
 ```powershell
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
@@ -91,6 +98,12 @@ Sau khi chay:
 - Securities advice: `http://localhost:8000/securities/advice/AAPL`
 
 ## Chay bang Docker
+
+Neu chay bang Docker va gateway nam cung Docker network voi service `ollama`, dung:
+
+```env
+OLLAMA_BASE_URL=http://ollama:11434
+```
 
 ```powershell
 docker build -t ai-gateway .
