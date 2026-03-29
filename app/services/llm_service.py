@@ -1,5 +1,6 @@
 import httpx
 
+from app.core.exceptions import BadRequestError
 from app.core.config import Settings
 from app.core.exceptions import ServiceUnavailableError
 from app.schemas.llm_schema import LlmChatRequest
@@ -32,6 +33,18 @@ class LlmService:
             async with httpx.AsyncClient(timeout=timeout) as client:
                 response = await client.post(f"{base_url}/api/chat", json=payload)
                 response.raise_for_status()
+        except httpx.HTTPStatusError as exc:
+            detail = "Ollama request failed."
+            try:
+                data = exc.response.json()
+                detail = data.get("error", detail)
+            except ValueError:
+                pass
+
+            if exc.response.status_code in {400, 404}:
+                raise BadRequestError(detail) from exc
+
+            raise ServiceUnavailableError("Ollama") from exc
         except httpx.HTTPError as exc:
             raise ServiceUnavailableError("Ollama") from exc
 

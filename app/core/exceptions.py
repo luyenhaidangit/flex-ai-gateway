@@ -31,6 +31,13 @@ class ConflictError(AppBaseException):
         super().__init__(message)
 
 
+class BadRequestError(AppBaseException):
+    """Raised when the client sends an invalid request."""
+
+    def __init__(self, message: str = "Bad request."):
+        super().__init__(message)
+
+
 class UnauthorizedError(AppBaseException):
     """Raised when authentication fails."""
 
