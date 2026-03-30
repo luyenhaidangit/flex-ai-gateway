@@ -26,6 +26,9 @@ dependencies = [
     # http client
     "httpx>=0.27,<1.0",
 
+    # vector store
+    "qdrant-client>=1.10,<2.0",
+
     # serialization
     "orjson>=3.9,<4.0",
 
@@ -36,6 +39,8 @@ dependencies = [
 [project.optional-dependencies]
 
 dev = [
+    "pytest>=8.0,<9.0",
+    "pytest-asyncio>=0.23,<1.0",
 ]
 
 [tool.black]

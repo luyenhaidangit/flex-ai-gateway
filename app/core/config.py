@@ -1,6 +1,7 @@
 # app/core/config.py
 
 from functools import lru_cache
+from pathlib import Path
 
 from pydantic_settings import BaseSettings
 
@@ -25,10 +26,23 @@ class Settings(BaseSettings):
     # LLM / OLLAMA
     # =========================
     OLLAMA_BASE_URL: str = "http://ollama:11434"
-    OLLAMA_MODEL_NAME: str = "qwen2.5:0.5b"
+    OLLAMA_MODEL_NAME: str = "qwen2.5:1.5b"
+    OLLAMA_EMBED_MODEL: str = "nomic-embed-text-v2-moe"
     OLLAMA_TIMEOUT_SECONDS: float = 120.0
     OLLAMA_MAX_TOKENS: int = 256
     OLLAMA_TEMPERATURE: float = 0.2
+
+    # =========================
+    # RAG / QDRANT
+    # =========================
+    QDRANT_URL: str = "http://qdrant:6333"
+    QDRANT_COLLECTION_NAME: str = "rag_documents"
+    QDRANT_VECTOR_SIZE: int = 768
+    QDRANT_DISTANCE: str = "Cosine"
+    RAG_SOURCE_DIR: str = "docs/knowledge-base"
+    RAG_CHUNK_SIZE: int = 1000
+    RAG_CHUNK_OVERLAP: int = 200
+    RAG_TOP_K: int = 5
 
     # =========================
     # ML MODEL
@@ -61,6 +75,10 @@ class Settings(BaseSettings):
     @property
     def cors_origins(self) -> list[str]:
         return [origin.strip() for origin in self.ALLOWED_ORIGINS.split(",")]
+
+    @property
+    def rag_source_path(self) -> Path:
+        return Path(self.RAG_SOURCE_DIR).resolve()
 
     class Config:
         env_file = ".env"

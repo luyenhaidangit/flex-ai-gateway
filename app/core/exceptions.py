@@ -43,3 +43,10 @@ class UnauthorizedError(AppBaseException):
 
     def __init__(self, message: str = "Unauthorized: invalid credentials."):
         super().__init__(message)
+
+
+class ConfigurationError(AppBaseException):
+    """Raised when the application configuration is invalid."""
+
+    def __init__(self, message: str = "Invalid application configuration."):
+        super().__init__(message)

@@ -1,4 +1,5 @@
 import httpx
+from qdrant_client import AsyncQdrantClient
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -22,4 +23,13 @@ async def check_llm_health(settings: Settings) -> bool:
             response.raise_for_status()
         return True
     except httpx.HTTPError:
+        return False
+
+
+async def check_qdrant_health(settings: Settings) -> bool:
+    try:
+        client = AsyncQdrantClient(url=settings.QDRANT_URL, timeout=10.0)
+        await client.get_collections()
+        return True
+    except Exception:
         return False
