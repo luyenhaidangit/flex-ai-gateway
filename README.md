@@ -218,6 +218,7 @@ curl -X POST http://localhost:8000/securities/price-change `
 - Entry point runtime la `app.main:app`
 - Knowledge base mac dinh nam o `docs/knowledge-base`
 - RAG hien ho tro file `.md` va `.txt`
+- Tai lieu luong RAG hien tai nam o `docs/rag-current-flow.md`
 - API goi y dau tu hien dung heuristic don gian dua tren `CHANGE_PERCENT` cua ban ghi moi nhat theo `symbol`
 - ORM model map bang Oracle nam o `app/models/securities_info.py`
 
