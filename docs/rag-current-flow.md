@@ -278,10 +278,7 @@ Neu muon tranh du lieu cu ton tai sau nhieu lan thay doi source documents, cach 
 
 ## Kiem tra nhanh sau khi chay
 
-1. Goi `GET /rag/health` de xem:
-   - Qdrant co ket noi duoc khong
-   - collection co ton tai khong
-   - co bao nhieu points da duoc index
+1. Goi `POST /rag/index` neu can nap moi hoac nap lai du lieu vao collection
 2. Goi `POST /rag/query` voi mot cau hoi lien quan den file trong `docs/knowledge-base`
 3. Kiem tra truong `sources` trong response de xem chunk nao da duoc truy hoi
 

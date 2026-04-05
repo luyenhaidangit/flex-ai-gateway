@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from pydantic import BaseModel, Field
 
 
@@ -39,14 +37,3 @@ class RagQueryResponse(BaseModel):
     answer: str
     collection_name: str
     sources: list[RagSourceChunk]
-
-
-class RagHealthResponse(BaseModel):
-    status: str = Field(examples=["healthy", "degraded"])
-    ollama: str = Field(examples=["connected", "disconnected"])
-    qdrant: str = Field(examples=["connected", "disconnected"])
-    collection_name: str
-    collection_exists: bool
-    indexed_points: int
-    source_directory: str
-    timestamp: datetime

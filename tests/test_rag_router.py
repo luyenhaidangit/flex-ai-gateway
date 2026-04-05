@@ -1,10 +1,7 @@
-from datetime import datetime, timezone
-
 from fastapi.testclient import TestClient
 
 from app.bootstrap.factory import create_application
 from app.routers import rag as rag_router_module
-from app.schemas.rag_schema import RagHealthResponse
 from app.schemas.rag_schema import RagIndexResponse
 from app.schemas.rag_schema import RagQueryResponse
 from app.schemas.rag_schema import RagSourceChunk
@@ -13,18 +10,6 @@ from app.schemas.rag_schema import RagSourceChunk
 class FakeRagService:
     def __init__(self, settings):
         self.settings = settings
-
-    async def get_health(self):
-        return RagHealthResponse(
-            status="healthy",
-            ollama="connected",
-            qdrant="connected",
-            collection_name="rag_documents",
-            collection_exists=True,
-            indexed_points=2,
-            source_directory="docs/knowledge-base",
-            timestamp=datetime.now(timezone.utc),
-        )
 
     async def index_documents(self, recreate_collection: bool = False):
         return RagIndexResponse(
@@ -55,10 +40,6 @@ class FakeRagService:
 def test_rag_endpoints(monkeypatch):
     monkeypatch.setattr(rag_router_module, "RagService", FakeRagService)
     client = TestClient(create_application())
-
-    health_response = client.get("/rag/health")
-    assert health_response.status_code == 200
-    assert health_response.json()["qdrant"] == "connected"
 
     index_response = client.post("/rag/index", json={"recreate_collection": True})
     assert index_response.status_code == 200

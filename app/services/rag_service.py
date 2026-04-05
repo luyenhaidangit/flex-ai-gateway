@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timezone
 from uuid import NAMESPACE_URL, uuid5
 
 import httpx
@@ -13,7 +12,6 @@ from app.core.exceptions import BadRequestError
 from app.core.exceptions import ConfigurationError
 from app.core.exceptions import NotFoundError
 from app.core.exceptions import ServiceUnavailableError
-from app.schemas.rag_schema import RagHealthResponse
 from app.schemas.rag_schema import RagIndexResponse
 from app.schemas.rag_schema import RagQueryRequest
 from app.schemas.rag_schema import RagQueryResponse
@@ -47,39 +45,6 @@ class RagService:
         self.timeout = httpx.Timeout(self.settings.OLLAMA_TIMEOUT_SECONDS)
         self.verify = self.settings.ollama_http_verify
         self.qdrant_client = AsyncQdrantClient(url=self.settings.QDRANT_URL, timeout=30.0)
-
-    async def get_health(self) -> RagHealthResponse:
-        ollama_healthy = await self._check_ollama_health()
-        qdrant_healthy = await self._check_qdrant_health()
-        collection_exists = False
-        indexed_points = 0
-
-        if qdrant_healthy:
-            try:
-                collection_exists = await self.qdrant_client.collection_exists(
-                    collection_name=self.settings.QDRANT_COLLECTION_NAME
-                )
-                if collection_exists:
-                    count_result = await self.qdrant_client.count(
-                        collection_name=self.settings.QDRANT_COLLECTION_NAME,
-                        exact=True,
-                    )
-                    indexed_points = count_result.count
-            except Exception:
-                qdrant_healthy = False
-
-        status = "healthy" if ollama_healthy and qdrant_healthy else "degraded"
-
-        return RagHealthResponse(
-            status=status,
-            ollama="connected" if ollama_healthy else "disconnected",
-            qdrant="connected" if qdrant_healthy else "disconnected",
-            collection_name=self.settings.QDRANT_COLLECTION_NAME,
-            collection_exists=collection_exists,
-            indexed_points=indexed_points,
-            source_directory=str(self.settings.rag_source_path),
-            timestamp=datetime.now(timezone.utc),
-        )
 
     async def index_documents(self, recreate_collection: bool = False) -> RagIndexResponse:
         self._validate_configuration()
@@ -376,22 +341,6 @@ class RagService:
             "model": str(data.get("model", model)),
             "content": str(message.get("content", "")),
         }
-
-    async def _check_ollama_health(self) -> bool:
-        try:
-            async with httpx.AsyncClient(timeout=httpx.Timeout(10.0), verify=self.verify) as client:
-                response = await client.get(f"{self.base_url}/api/tags")
-                response.raise_for_status()
-            return True
-        except httpx.HTTPError:
-            return False
-
-    async def _check_qdrant_health(self) -> bool:
-        try:
-            await self.qdrant_client.get_collections()
-            return True
-        except Exception:
-            return False
 
     def _distance_value(self, configured_distance: str) -> qdrant_models.Distance:
         try:

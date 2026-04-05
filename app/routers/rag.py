@@ -5,7 +5,6 @@ from app.core.exceptions import BadRequestError
 from app.core.exceptions import ConfigurationError
 from app.core.exceptions import NotFoundError
 from app.core.exceptions import ServiceUnavailableError
-from app.schemas.rag_schema import RagHealthResponse
 from app.schemas.rag_schema import RagIndexRequest
 from app.schemas.rag_schema import RagIndexResponse
 from app.schemas.rag_schema import RagQueryRequest
@@ -13,16 +12,6 @@ from app.schemas.rag_schema import RagQueryResponse
 from app.services.rag_service import RagService
 
 router = APIRouter(prefix="/rag", tags=["RAG"])
-
-
-@router.get(
-    "/health",
-    response_model=RagHealthResponse,
-    summary="Check RAG dependencies and collection state",
-)
-async def rag_health(settings: SettingsDep):
-    service = RagService(settings)
-    return await service.get_health()
 
 
 @router.post(

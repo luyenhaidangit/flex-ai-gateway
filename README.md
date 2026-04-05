@@ -6,7 +6,6 @@
 
 - `GET /`: tra ve thong tin service co ban va link nhanh den docs/health
 - `GET /health`: kiem tra ket noi database, Ollama, va Qdrant
-- `GET /rag/health`: kiem tra rieng tinh trang RAG stack
 - `POST /rag/index`: nap tai lieu tu `docs/knowledge-base` vao Qdrant
 - `POST /rag/query`: hoi dap tren knowledge base da index
 - `GET /securities/advice/{symbol}`: lay goi y dau tu cho ma chung khoan, vi du `AAPL`
@@ -123,7 +122,6 @@ Sau khi chay:
 - Service info: `http://localhost:8000/`
 - Swagger UI: `http://localhost:8000/docs`
 - Health check: `http://localhost:8000/health`
-- RAG health: `http://localhost:8000/rag/health`
 - Securities advice: `http://localhost:8000/securities/advice/AAPL`
 
 ## Chay bang Docker Compose local
@@ -167,12 +165,6 @@ curl http://localhost:8000/
 
 ```powershell
 curl http://localhost:8000/health
-```
-
-### RAG health
-
-```powershell
-curl http://localhost:8000/rag/health
 ```
 
 ### Index knowledge base
