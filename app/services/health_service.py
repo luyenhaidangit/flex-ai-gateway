@@ -1,9 +1,12 @@
 import httpx
-from qdrant_client import AsyncQdrantClient
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import Settings
+from app.core.logging import get_logger
+
+
+logger = get_logger(__name__)
 
 
 async def check_database_health(db: AsyncSession) -> bool:
@@ -28,9 +31,19 @@ async def check_llm_health(settings: Settings) -> bool:
 
 
 async def check_qdrant_health(settings: Settings) -> bool:
+    base_url = settings.QDRANT_URL.rstrip("/")
+    verify = settings.qdrant_http_verify
+
     try:
-        client = AsyncQdrantClient(url=settings.QDRANT_URL, timeout=10.0)
-        await client.get_collections()
+        async with httpx.AsyncClient(timeout=httpx.Timeout(10.0), verify=verify) as client:
+            response = await client.get(f"{base_url}/collections")
+            response.raise_for_status()
         return True
-    except Exception:
+    except Exception as exc:
+        logger.warning(
+            "Qdrant health check failed",
+            qdrant_url=settings.QDRANT_URL,
+            error_type=type(exc).__name__,
+            error=str(exc),
+        )
         return False

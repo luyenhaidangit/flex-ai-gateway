@@ -37,6 +37,7 @@ class Settings(BaseSettings):
     # RAG / QDRANT
     # =========================
     QDRANT_URL: str = "http://qdrant:6333"
+    QDRANT_CA_CERT: str | None = None
     QDRANT_COLLECTION_NAME: str = "rag_documents"
     QDRANT_VECTOR_SIZE: int = 768
     QDRANT_DISTANCE: str = "Cosine"
@@ -93,6 +94,23 @@ class Settings(BaseSettings):
         if cert_path is None:
             return True
         return str(cert_path)
+
+    @property
+    def qdrant_ca_cert_path(self) -> Path | None:
+        if not self.QDRANT_CA_CERT:
+            return None
+        return Path(self.QDRANT_CA_CERT).resolve()
+
+    @property
+    def qdrant_http_verify(self) -> bool | str:
+        cert_path = self.qdrant_ca_cert_path
+        if cert_path is None:
+            return True
+        return str(cert_path)
+
+    @property
+    def qdrant_uses_https(self) -> bool:
+        return self.QDRANT_URL.strip().lower().startswith("https://")
 
     class Config:
         env_file = ".env"
